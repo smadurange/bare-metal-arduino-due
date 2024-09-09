@@ -1,43 +1,69 @@
-#define PIOC_PER  *((volatile unsigned int *) 0x400E1200U)
-#define PIOC_PDR  *((volatile unsigned int *) 0x400E1204U)
-#define PIOC_OER  *((volatile unsigned int *) 0x400E1210U)
-#define PIOC_ODR  *((volatile unsigned int *) 0x400E1214U)
-#define PIOC_IDR  *((volatile unsigned int *) 0x400E1244U)
-#define PIOC_IER  *((volatile unsigned int *) 0x400E1240U)
-#define PIOC_ABSR *((volatile unsigned int *) 0x400E1270U)
-#define PIOC_CODR *((volatile unsigned int *) 0x400E1234U)
-#define PIOC_IFDR *((volatile unsigned int *) 0x400E1224U)
-#define PIOC_IFER *((volatile unsigned int *) 0x400E1220U)
-#define PIOC_MDDR *((volatile unsigned int *) 0x400E1254U)
-#define PIOC_MDER *((volatile unsigned int *) 0x400E1250U)
-#define PIOC_ODSR *((volatile unsigned int *) 0x400E1238U)
-#define PIOC_PUDR *((volatile unsigned int *) 0x400E1260U)
-#define PIOC_PUER *((volatile unsigned int *) 0x400E1264U)
-#define PIOC_OWDR *((volatile unsigned int *) 0x400E12A4U)
-#define PIOC_OWER *((volatile unsigned int *) 0x400E12A0U)
-#define PIOC_SODR *((volatile unsigned int *) 0x400E1230U)
+#define PIOA 0x400E0E00
+#define PIOB 0x400E1000
+#define PIOC 0x400E1200
+#define PIOD 0x400E1400
+
+#define PORT PIOC;
+
+#define PIO_PER     *((volatile unsigned int *)(PORT + 0x0000))
+#define PIO_PDR     *((volatile unsigned int *)(PORT + 0x0004))
+#define PIO_PSR     *((volatile unsigned int *)(PORT + 0x0008))
+#define PIO_OER     *((volatile unsigned int *)(PORT + 0x0010))
+#define PIO_ODR     *((volatile unsigned int *)(PORT + 0x0014))
+#define PIO_OSR     *((volatile unsigned int *)(PORT + 0x0018))
+#define PIO_IFER    *((volatile unsigned int *)(PORT + 0x0020))
+#define PIO_IFDR    *((volatile unsigned int *)(PORT + 0x0024))
+#define PIO_IFSR    *((volatile unsigned int *)(PORT + 0x0028))
+#define PIO_SODR    *((volatile unsigned int *)(PORT + 0x0030))
+#define PIO_CODR    *((volatile unsigned int *)(PORT + 0x0034))
+#define PIO_ODSR    *((volatile unsigned int *)(PORT + 0x0038))
+#define PIO_PDSR    *((volatile unsigned int *)(PORT + 0x003C))
+#define PIO_IER     *((volatile unsigned int *)(PORT + 0x0040))
+#define PIO_IDR     *((volatile unsigned int *)(PORT + 0x0044))
+#define PIO_IMR     *((volatile unsigned int *)(PORT + 0x0048))
+#define PIO_ISR     *((volatile unsigned int *)(PORT + 0x004C))
+#define PIO_MDER    *((volatile unsigned int *)(PORT + 0x0050))
+#define PIO_MDDR    *((volatile unsigned int *)(PORT + 0x0054))
+#define PIO_MDSR    *((volatile unsigned int *)(PORT + 0x0058))
+#define PIO_PUDR    *((volatile unsigned int *)(PORT + 0x0060))
+#define PIO_PUER    *((volatile unsigned int *)(PORT + 0x0064))
+#define PIO_PUSR    *((volatile unsigned int *)(PORT + 0x0068))
+#define PIO_ABSR    *((volatile unsigned int *)(PORT + 0x0070))
+#define PIO_SCIFSR  *((volatile unsigned int *)(PORT + 0x0080))
+#define PIO_DIFSR   *((volatile unsigned int *)(PORT + 0x0084))
+#define PIO_IFDGSR  *((volatile unsigned int *)(PORT + 0x0088))
+#define PIO_SCDR    *((volatile unsigned int *)(PORT + 0x008C))
+#define PIO_OWER    *((volatile unsigned int *)(PORT + 0x00A0))
+#define PIO_OWDR    *((volatile unsigned int *)(PORT + 0x00A4))
+#define PIO_OWSR    *((volatile unsigned int *)(PORT + 0x00A8))
+#define PIO_AIMER   *((volatile unsigned int *)(PORT + 0x00B0))
+#define PIO_AIMDR   *((volatile unsigned int *)(PORT + 0x00B4))
+#define PIO_AIMMR   *((volatile unsigned int *)(PORT + 0x00B8))
+
+#define PIO_WPMR    *((volatile unsigned int *)(PORT + 0x00E4))
+#define PIO_WPSR    *((volatile unsigned int *)(PORT + 0x00E8))
+
+#define PIN_NUM_MASK   (1U << 0)
+#define PIO_WPEN_MASK 0x50494F00
 
 int main(void)
 {
-	PIOC_PER = 0x0000FFFF;
-	PIOC_PDR = 0xFFFF0000;
-	PIOC_OER = 0x000000FF;
-	PIOC_ODR = 0xFFFFFF00;
-	PIOC_IFER = 0x00000F00;
-	PIOC_IFDR = 0xFFFFF0FF;
-	PIOC_SODR = 0x00000000;
-	PIOC_CODR = 0x0FFFFFFF;
-	PIOC_IER  = 0x0F000F00;
-	PIOC_IDR  = 0xF0FFF0FF;
-	PIOC_MDER = 0x0000000F;
-	PIOC_MDDR = 0xFFFFFFF0;
-	PIOC_PUDR = 0xF0F000F0;
-	PIOC_PUER = 0x0F0FFF0F;
-	PIOC_ABSR = 0x00F00000;
-	PIOC_OWER = 0x0000000F;
-	PIOC_OWDR = 0x0FFFFFF0;
+	PIO_WPMR = PIO_WPEN_MASK & 0xFFFFFFFE;
 
-	PIOC_ODSR = 0x0000FFFF;
+	PIO_PER |= PIN_NUM_MASK;
+	PIO_PDR |= ~PIN_NUM_MASK;
+
+	PIO_OER |= PIN_NUM_MASK;
+	PIO_ODR |= ~PIN_NUM_MASK;
+
+	PIO_IER |= ~PIN_NUM_MASK;
+	PIO_IDR |= PIN_NUM_MASK;
+
+	PIO_PUDR |= PIN_NUM_MASK;
+	PIO_PUER |= ~PIN_NUM_MASK;
+	
+	PIO_SODR = 1;
+	PIO_CODR = 0;
 
 	return 0;
 }
