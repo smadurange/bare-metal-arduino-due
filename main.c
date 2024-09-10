@@ -15,7 +15,7 @@
 #define WPKEY 0x50494Fu
 
 #define GPIO_NUM 1
-#define GPIO_MASK (1u << PIN_NUM)
+#define GPIO_MASK (1u << GPIO_NUM)
 
 int main(void)
 {
