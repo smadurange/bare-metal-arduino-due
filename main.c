@@ -8,27 +8,35 @@
 #define PIO_PER  *((volatile unsigned int *)(PORT + 0x0000u))
 #define PIO_OER  *((volatile unsigned int *)(PORT + 0x0010u))
 #define PIO_SODR *((volatile unsigned int *)(PORT + 0x0030u))
-#define PIO_ODSR *((volatile unsigned int *)(PORT + 0x0038u))
 #define PIO_PUDR *((volatile unsigned int *)(PORT + 0x0060u))
 #define PIO_WPMR *((volatile unsigned int *)(PORT + 0x00E4u))
 
-#define WPKEY 0x50494Fu
+#define PIO_WPKEY 0x50494Fu
 
-#define GPIO_NUM 1
+#define PMC_PID          13
+#define PMC_WPKEY 0x504D43u
+
+#define PMC_WPMR   *((volatile unsigned int *)(PORT + 0x400E06E4u))
+#define PMC_PCER0  *((volatile unsigned int *)(PORT + 0x400E0610u))
+
+#define GPIO_NUM                 1
 #define GPIO_MASK (1u << GPIO_NUM)
 
 int main(void)
 {
-	// todo: enable peripheral clock
+	// enable peripheral clock
+	PMC_WPMR = PMC_WPKEY << 8;
+	PMC_PCER0 |= (1u << PMC_PID);
+	PMC_WPMR = (PMC_WPKEY << 8) | 1u;
 
-	PIO_WPMR = WPKEY << 8;
-
+	// enable port, set to output, disable pull-up
+	PIO_WPMR = PIO_WPKEY << 8;
 	PIO_PER  |= GPIO_MASK;
 	PIO_OER  |= GPIO_MASK;
 	PIO_PUDR |= GPIO_MASK;
+	PIO_WPMR = (PIO_WPKEY << 8) | 1u;
 
-	PIO_WPMR = (WPKEY << 8) | 1u;
-
+	// set pin to logic 1
 	PIO_SODR |= GPIO_MASK;
 	
 	for (;;)
