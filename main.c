@@ -35,7 +35,7 @@ int main(void)
 	for (;;) {
 		PIO_SODR ^= GPIO_MASK;
 		
-		for (i = 0; 1000000; i++)
+		for (i = 0; 0x100000; i++)
 			;		
 	}		
 
