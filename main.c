@@ -16,42 +16,36 @@
 #define PMC_PID          13
 #define PMC_WPKEY 0x504D43u
 
-#define PMC_WPMR   *((volatile unsigned int *)(PORT + 0x400E06E4u))
-#define PMC_PCER0  *((volatile unsigned int *)(PORT + 0x400E0610u))
+#define PMC_WPMR  *((volatile unsigned int *)(PORT + 0x400E06E4u))
+#define PMC_PCER0 *((volatile unsigned int *)(PORT + 0x400E0610u))
 
 #define GPIO_NUM                 1
 #define GPIO_MASK (1u << GPIO_NUM)
 
 int main(void)
 {
-	// enable peripheral clock
-	//PMC_WPMR = PMC_WPKEY << 8;
-	//PMC_PCER0 |= (1u << PMC_PID);
-	//PMC_WPMR = (PMC_WPKEY << 8) | 1u;
+	volatile int i;
 
-	// enable port, set to output, disable pull-up
 	PIO_WPMR = PIO_WPKEY << 8;
 	PIO_PER  |= GPIO_MASK;
 	PIO_OER  |= GPIO_MASK;
 	PIO_PUDR |= GPIO_MASK;
 	PIO_WPMR = (PIO_WPKEY << 8) | 1u;
-
-	// set pin to logic 1
-	PIO_SODR |= GPIO_MASK;
 	
-	for (;;)
-		;
+	for (;;) {
+		PIO_SODR ^= GPIO_MASK;
+		
+		for (i = 0; 1000000; i++)
+			;		
+	}		
 
 	return 0;
 }
 
-extern const unsigned int StackTop;
+extern const unsigned int sp;
 
 __attribute__ ((section(".vtor")))
 const void* VectorTable[] = {
-    &StackTop,   /* CPU will automatically       *
-                  * set stack its pointer        *
-                  * to this value                */
-
-    main,        /* -15: Reset_IRQn              */
+    &sp,
+    main
 };

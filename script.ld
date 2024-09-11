@@ -38,5 +38,5 @@ SECTIONS
 		__bss_end__ = . ;
 	} > ram
 
-	StackTop = ORIGIN(ram) + LENGTH(ram);
+	sp = ORIGIN(ram) + LENGTH(ram);
 }
