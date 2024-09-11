@@ -1,3 +1,5 @@
+ENTRY(main)
+
 MEMORY
 {
 	rom (rx)  : ORIGIN = 0x00080000, LENGTH = 0x00080000
@@ -6,21 +8,28 @@ MEMORY
 
 SECTIONS
 {
-	. = ALIGN(4);
 	.text :
 	{
-		KEEP(*(.vectors .vectors.*))
+		KEEP(*(.vtor))
+
 		*(.text*)
 		*(.rodata*)
+
+		. = ALIGN(4);
+		__end_of_text__ = .;
 	} > rom
 
-	. = ALIGN(4);
 	.data :
 	{
-		*(.data*);
+		__data_start_src__ = __end_of_text__;
+		__data_start__ = .;
+
+		*(.data*)
+
+		. = ALIGN(4);
+		__data_end__ = .;
 	} > ram AT >rom
 
-	. = ALIGN(4);
 	.bss (NOLOAD) :
 	{
 		__bss_start__ = . ;
@@ -29,7 +38,5 @@ SECTIONS
 		__bss_end__ = . ;
 	} > ram
 
-	_end = . ;
-	__end__ = _end ;
-	end = _end;
+	StackTop = ORIGIN(ram) + LENGTH(ram);
 }

@@ -25,9 +25,9 @@
 int main(void)
 {
 	// enable peripheral clock
-	PMC_WPMR = PMC_WPKEY << 8;
-	PMC_PCER0 |= (1u << PMC_PID);
-	PMC_WPMR = (PMC_WPKEY << 8) | 1u;
+	//PMC_WPMR = PMC_WPKEY << 8;
+	//PMC_PCER0 |= (1u << PMC_PID);
+	//PMC_WPMR = (PMC_WPKEY << 8) | 1u;
 
 	// enable port, set to output, disable pull-up
 	PIO_WPMR = PIO_WPKEY << 8;
@@ -44,3 +44,14 @@ int main(void)
 
 	return 0;
 }
+
+extern const unsigned int StackTop;
+
+__attribute__ ((section(".vtor")))
+const void* VectorTable[] = {
+    &StackTop,   /* CPU will automatically       *
+                  * set stack its pointer        *
+                  * to this value                */
+
+    main,        /* -15: Reset_IRQn              */
+};
