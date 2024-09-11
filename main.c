@@ -33,10 +33,10 @@ int main(void)
 	PIO_WPMR = (PIO_WPKEY << 8) | 1u;
 	
 	for (;;) {
-		PIO_SODR ^= GPIO_MASK;
-		
 		for (i = 0; 0x100000; i++)
 			;		
+
+		PIO_SODR ^= GPIO_MASK;
 	}		
 
 	return 0;
