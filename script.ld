@@ -17,14 +17,18 @@ SECTIONS
 
 	.data :
 	{
+		_sdata = . ;
 		*(.data*)
-	} > ram AT >rom
+		_edata = . ;
+	} > ram AT > rom
+
+	_sidata = LOADADDR(.data);
 
 	.bss (NOLOAD) :
 	{
-		__bss_start__ = . ;
+		_sbss = . ;
 		*(.bss*)
 		*(COMMON)
-		__bss_end__ = . ;
+		_ebss = . ;
 	} > ram
 }
