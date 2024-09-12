@@ -35,10 +35,10 @@ int main(void)
 	
 	for (;;) {
 		PIO_SODR |= GPIO_MASK;
-		for (i = 0; i < 0x100000; i++)
+		for (i = 0; i < 0x100000 / 2; i++)
 			;		
 		PIO_CODR |= GPIO_MASK;
-		for (i = 0; i < 0x100000; i++)
+		for (i = 0; i < 0x100000 / 2; i++)
 			;		
 	}		
 
