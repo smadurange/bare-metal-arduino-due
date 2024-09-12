@@ -11,8 +11,6 @@
 #define PIO_CODR *((volatile unsigned int *)(PORT + 0x0034u))
 #define PIO_WPMR *((volatile unsigned int *)(PORT + 0x00E4u))
 
-#define PIO_WPKEY 0x50494Fu
-
 #define LED_PIN 1
 
 void wait(int t)
@@ -27,10 +25,8 @@ int main(void)
 {
 	volatile int i;
 
-	PIO_WPMR = PIO_WPKEY << 8;
 	PIO_PER  |= (1 << LED_PIN);
 	PIO_OER  |= (1 << LED_PIN);
-	PIO_WPMR = (PIO_WPKEY << 8) | 1;
 	
 	for (;;) {
 		PIO_SODR |= (1 << LED_PIN);
@@ -56,6 +52,7 @@ static inline void mem_init(void)
 
 __attribute__((noreturn)) void reset(void) {
 	mem_init();
+
 	main();
 
 	for (;;)
