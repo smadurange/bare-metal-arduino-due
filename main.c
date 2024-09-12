@@ -8,6 +8,7 @@
 #define PIO_PER  *((volatile unsigned int *)(PORT + 0x0000u))
 #define PIO_OER  *((volatile unsigned int *)(PORT + 0x0010u))
 #define PIO_SODR *((volatile unsigned int *)(PORT + 0x0030u))
+#define PIO_CODR *((volatile unsigned int *)(PORT + 0x0034u))
 #define PIO_PUDR *((volatile unsigned int *)(PORT + 0x0060u))
 #define PIO_WPMR *((volatile unsigned int *)(PORT + 0x00E4u))
 
@@ -33,10 +34,12 @@ int main(void)
 	PIO_WPMR = (PIO_WPKEY << 8) | 1u;
 	
 	for (;;) {
+		PIO_SODR |= GPIO_MASK;
 		for (i = 0; i < 0x100000; i++)
 			;		
-
-		PIO_SODR ^= GPIO_MASK;
+		PIO_CODR |= GPIO_MASK;
+		for (i = 0; i < 0x100000; i++)
+			;		
 	}		
 
 	return 0;
