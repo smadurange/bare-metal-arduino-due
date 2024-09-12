@@ -14,30 +14,23 @@
 
 #define PIO_WPKEY 0x50494Fu
 
-#define PMC_PID          13
-#define PMC_WPKEY 0x504D43u
-
-#define PMC_WPMR  *((volatile unsigned int *)(PORT + 0x400E06E4u))
-#define PMC_PCER0 *((volatile unsigned int *)(PORT + 0x400E0610u))
-
-#define GPIO_NUM                 1
-#define GPIO_MASK (1u << GPIO_NUM)
+#define LED_PIN 1
 
 int main(void)
 {
 	volatile int i;
 
 	PIO_WPMR = PIO_WPKEY << 8;
-	PIO_PER  |= GPIO_MASK;
-	PIO_OER  |= GPIO_MASK;
-	PIO_PUDR |= GPIO_MASK;
+	PIO_PER  |= (1 << LED_PIN);
+	PIO_OER  |= (1 << LED_PIN);
+	PIO_PUDR |= (1 << LED_PIN);
 	PIO_WPMR = (PIO_WPKEY << 8) | 1u;
 	
 	for (;;) {
-		PIO_SODR |= GPIO_MASK;
+		PIO_SODR |= (1 << LED_PIN);
 		for (i = 0; i < 100000; i++)
 			;		
-		PIO_CODR |= GPIO_MASK;
+		PIO_CODR |= (1 << LED_PIN);
 		for (i = 0; i < 100000; i++)
 			;		
 	}		
@@ -45,10 +38,16 @@ int main(void)
 	return 0;
 }
 
+__attribute__ ((noreturn)) void reset_handler(void)
+{
+	main();
+	for(;;)
+		;
+}
+
 extern const unsigned int sp;
 
-__attribute__ ((section(".vtor")))
-const void* VectorTable[] = {
+__attribute__ ((section(".vtor"))) const void* tab[] = {
     &sp,
-    main
+    reset_handler
 };
