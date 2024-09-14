@@ -38,8 +38,7 @@ int main(void)
 	return 0;
 }
 
-static inline void mem_init(void)
-{
+__attribute__((noreturn)) void _rst_handler(void) {
 	unsigned long *dst, *src;
 	extern unsigned long _sbss, _ebss, _sdata, _edata, _sidata;
 
@@ -48,10 +47,6 @@ static inline void mem_init(void)
 
 	for (dst = &_sdata, src = &_sidata; dst < &_edata;)
 		*dst++ = *src++;
-}
-
-__attribute__((noreturn)) void reset(void) {
-	mem_init();
 
 	main();
 
@@ -59,9 +54,9 @@ __attribute__((noreturn)) void reset(void) {
 		;
 }
 
-extern const unsigned int sp;
+extern const unsigned int _sp;
 
-__attribute__ ((section(".vtor"))) const void* tab[] = {
-    &sp,
-    reset
+__attribute__ ((section(".vtor"))) const void* _tab[] = {
+    &_sp,
+    _rst_handler
 };

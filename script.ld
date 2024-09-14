@@ -4,7 +4,7 @@ MEMORY
 	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 96K
 }
 
-sp = ORIGIN(ram) + LENGTH(ram);
+_sp = ORIGIN(ram) + LENGTH(ram);
 
 SECTIONS
 {
