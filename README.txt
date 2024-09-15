@@ -1,5 +1,12 @@
-Compile and upload
+Set GPNVM bits to boot from flash0:
+
+# openocd -f openocd-due.cfg
+$ telnet localhost 4444
+  > halt
+  > at91sam3 gpnvm set 1
+  > at91sam3 gpnvm show
+
+Compile and flash
 
 $ arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -T script.ld -nostartfiles -nostdlib -o a.elf main.c
-$ arm-none-eabi-objcopy -O ihex -j .text -j .data a.elf a.hex
-$ avrdude -c arduino -p atmel_sam3x8e -v -b 115200 -U flash:w:a.hex
+# openocd -f openocd-due.cfg -c "program a.elf verify reset exit"
