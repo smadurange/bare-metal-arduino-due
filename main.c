@@ -38,7 +38,7 @@ int main(void)
 	return 0;
 }
 
-__attribute__((noreturn)) void _rst_handler(void) {
+__attribute__((noreturn)) void _reset(void) {
 	unsigned long *dst, *src;
 	extern unsigned long _sbss, _ebss, _sdata, _edata, _sidata;
 
@@ -49,14 +49,8 @@ __attribute__((noreturn)) void _rst_handler(void) {
 		*dst++ = *src++;
 
 	main();
-
-	for (;;)
-		;
 }
 
 extern const unsigned int _sp;
 
-__attribute__ ((section(".vtor"))) const void* _tab[] = {
-    &_sp,
-    _rst_handler
-};
+__attribute__ ((section(".vtor"))) const void* _tab[] = { &_sp, _reset };

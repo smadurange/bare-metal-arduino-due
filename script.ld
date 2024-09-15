@@ -4,8 +4,6 @@ MEMORY
 	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 96K
 }
 
-_sp = ORIGIN(ram) + LENGTH(ram);
-
 SECTIONS
 {
 	.text :
@@ -32,3 +30,5 @@ SECTIONS
 		_ebss = . ;
 	} > ram
 }
+
+_sp = ORIGIN(ram) + LENGTH(ram);
